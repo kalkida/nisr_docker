@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: nisr
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  
+
+  api:
+    build: ./Nisr
+    container_name: Nisr
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+    environment:
+      DB_HOST: postgres
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: nisr
+
